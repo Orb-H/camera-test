@@ -216,7 +216,7 @@ class Quaternion:
     A quaternion class.
     '''
 
-    def __init__(self, v: Vector = None):
+    def __init__(self, v=None):
         if v == None or len(v) == 0:  # Default Quaternion
             self.q = [1, 0, 0, 0]
         if len(v) == 3:  # Euler Angle (Yaw, Pitch, Roll)
@@ -226,7 +226,7 @@ class Quaternion:
             m = v.magnitude()
             self.q = v / m
 
-    def rotate(self, v: Vector):
+    def rotate(self, v):
         '''
         Rotates a vector by rotation defined by this.
 

@@ -217,6 +217,16 @@ class Quaternion:
     '''
 
     def __init__(self, v=None):
+        '''
+        A constructor.
+
+        PARAMETER
+            v: A vector indicating rotation(Optional).
+
+        RETURNS
+            A default quaternion if v is None or zero-dimensional vector.(Rotation quaternion representing not rotationing)
+            A corresponding quaternion if v is given as a format of euler angle(Yaw, Pitch, Roll in order) or scalar-multiplied quaternion
+        '''
         if v == None or len(v) == 0:  # Default Quaternion
             self.q = [1, 0, 0, 0]
         if len(v) == 3:  # Euler Angle (Yaw, Pitch, Roll)

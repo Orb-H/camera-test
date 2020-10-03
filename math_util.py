@@ -39,6 +39,9 @@ class Vector:
     def __mul__(self, other):
         return self.multiply(other)
 
+    def __rmul__(self, other):
+        return self.multiply(other)
+
     def __truediv__(self, other):
         return self.divide(other)
 

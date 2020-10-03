@@ -36,6 +36,12 @@ class Vector:
     def __abs__(self):
         return self.magnitude()
 
+    def __mul__(self, other):
+        return self.multiply(other)
+
+    def __truediv__(self, other):
+        return self.divide(other)
+
     def __eq__(self, other):
         return self.equals(other)
 
@@ -124,6 +130,30 @@ class Vector:
             A vector with negated values of this vector.
         '''
         return Vector(-self.v[i] for i in range(len(self.v)))
+
+    def multiply(self, val):
+        '''
+        Multiplies a scalar to this vector.
+
+        PARAMETER
+            val: A value to multiply to each element of this vector.
+
+        RETURNS
+            A scalar-multiplied vector.
+        '''
+        return Vector(self.v[i] * val for i in range(len(self.v)))
+
+    def divide(self, val):
+        '''
+        Divides this vector by a scalar.
+
+        PARAMETER
+            val: A value to divide each element of this vector by.
+
+        RETURNS
+            A scalar-divided vector.
+        '''
+        return self.multiply(1 / val)
 
     def dot(self, other):
         '''

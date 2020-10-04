@@ -24,6 +24,14 @@ if __name__ == "__main__":
         label_text.set("FPS: " + str(int(1 / (time.time() - t))))
         t = time.time()
 
+        pos = c.pos.v
+        pos_label_text.set(
+            "".join(["[", str(round(pos[0], 2)), ", ", str(round(pos[1], 2)), ", ", str(round(pos[2], 2)), "]"]))
+
+        rot = c.rot.q
+        rot_label_text.set(
+            "".join(["[", str(round(rot[0], 3)), ", ", str(round(rot[1], 3)), ", ", str(round(rot[2], 3)), ", ", str(round(rot[3], 3)), "]"]))
+
         window.after(MS_PER_TICK, tick)
 
     def key_event(event):
@@ -64,8 +72,20 @@ if __name__ == "__main__":
     label_text = tk.StringVar()
     label_text.set("FPS: ")
     label = tk.Label(window, textvariable=label_text, width=7,
-                     height=1, fg="white", bg="black", bd=0)
+                     height=1, fg="white", bg="black", bd=0, anchor="nw")
     label.place(in_=canvas, relx=0, rely=0)
+
+    pos_label_text = tk.StringVar()
+    pos_label_text.set("[]")
+    pos_label = tk.Label(window, textvariable=pos_label_text,
+                         width=40, height=1, fg="white", bg="black", bd=0, anchor="nw")
+    pos_label.place(in_=canvas, relx=0, rely=0.05)
+
+    rot_label_text = tk.StringVar()
+    rot_label_text.set("[]")
+    rot_label = tk.Label(window, textvariable=rot_label_text,
+                         width=40, height=1, fg="white", bg="black", bd=0, anchor="nw")
+    rot_label.place(in_=canvas, relx=0, rely=0.1)
 
     # create camera
     c = cam.Camera(canvas)

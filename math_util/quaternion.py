@@ -1,5 +1,5 @@
 import math
-from vector import Vector
+from math_util.vector import Vector
 
 
 class Quaternion:

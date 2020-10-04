@@ -246,7 +246,12 @@ class Quaternion:
         return Quaternion(Vector([self.q[0], -self.q[1], -self.q[2], -self.q[3]]))
     
     def __mul__(self, other):
+        if isinstance(other, Quaternion):
         return self.composite(other)
+        elif isinstance(other, Vector):
+            if len(other.v) != 3:
+                raise Exception("Given vector is not a 3d vector.")
+            return self.rotate(other)
 
     def rotate(self, v):
         '''

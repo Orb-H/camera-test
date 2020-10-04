@@ -10,7 +10,7 @@ class Camera:
 
     def __init__(self, canvas, renderer=None):
         self.pos = Vector([0, 0, 0])
-        self.rot = Quaternion()
+        self.rot = Quaternion(Vector([0, 0, 0]))
 
         self.c = canvas
         self.r = renderer

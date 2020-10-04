@@ -13,7 +13,7 @@ class Vector:
         PARAMETER
             v: A list containing values for elements of vector.
         '''
-        self.v = v
+        self.v = list(v)
 
     def __len__(self):
         '''
@@ -176,7 +176,7 @@ class Vector:
         '''
         if len(self.v) != len(other.v):
             raise Exception("Given two vectors have different size.")
-        return Vector(self.v[i] * other.v[i] for i in range(len(self.v)))
+        return sum(self.v[i] * other.v[i] for i in range(len(self.v)))
 
     def cross(self, other):
         '''
@@ -230,13 +230,14 @@ class Quaternion:
             A default quaternion if v is None or zero-dimensional vector.(Rotation quaternion representing not rotationing)
             A corresponding quaternion if v is given as a format of euler angle(Yaw, Pitch, Roll in order) or scalar-multiplied quaternion
         '''
-        if v == None or len(v) == 0:  # Default Quaternion
+        if v is None or len(v) == 0:  # Default Quaternion
             self.q = [1, 0, 0, 0]
         if len(v) == 3:  # Euler Angle (Yaw, Pitch, Roll)
-            self.q = Quaternion([math.cos(v[2] / 2), 0, 0, math.sin(v[2] / 2)]).composite(Quaternion([math.cos(
-                v[1] / 2), math.sin(v[1] / 2), 0, 0])).composite(Quaternion([math.cos(v[0] / 2), 0, math.sin(v[0] / 2)]))
+            self.q = Quaternion(Vector([math.cos(v[2] / 2), 0, 0, math.sin(v[2] / 2)])).composite(Quaternion(Vector([math.cos(
+                v[1] / 2), math.sin(v[1] / 2), 0, 0]))).composite(Quaternion(Vector([math.cos(v[0] / 2), 0, math.sin(v[0] / 2)]))).q
         elif len(v) == 4:  # Quaternion Value
             m = v.magnitude()
+            self.q = v.divide(m).v
     
     def __str__(self):
         return str(self.q)

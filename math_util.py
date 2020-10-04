@@ -234,7 +234,12 @@ class Quaternion:
                 v[1] / 2), math.sin(v[1] / 2), 0, 0])).composite(Quaternion([math.cos(v[0] / 2), 0, math.sin(v[0] / 2)]))
         elif len(v) == 4:  # Quaternion Value
             m = v.magnitude()
-            self.q = v / m
+
+    def __neg__(self):
+        return Quaternion(Vector([self.q[0], -self.q[1], -self.q[2], -self.q[3]]))
+    
+    def __mul__(self, other):
+        return self.composite(other)
 
     def rotate(self, v):
         '''

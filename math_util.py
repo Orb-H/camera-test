@@ -51,6 +51,9 @@ class Vector:
     def __ne__(self, other):
         return not self.__eq__(other)
 
+    def __str__(self):
+        return str(self.v)
+
     def __getitem__(self, i):
         return self.v[i]
 
@@ -234,6 +237,9 @@ class Quaternion:
                 v[1] / 2), math.sin(v[1] / 2), 0, 0])).composite(Quaternion([math.cos(v[0] / 2), 0, math.sin(v[0] / 2)]))
         elif len(v) == 4:  # Quaternion Value
             m = v.magnitude()
+    
+    def __str__(self):
+        return str(self.q)
 
     def __neg__(self):
         return Quaternion(Vector([self.q[0], -self.q[1], -self.q[2], -self.q[3]]))

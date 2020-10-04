@@ -27,29 +27,29 @@ if __name__ == "__main__":
         window.after(MS_PER_TICK, tick)
 
     def key_event(event):
-        if event.char == 'W':
+        if event.char == 'w':
             c.move_forward(10 / FPS)
-        elif event.char == 'A':
+        elif event.char == 'a':
             c.move_left(10 / FPS)
-        elif event.char == 'S':
+        elif event.char == 's':
             c.move_backward(10 / FPS)
-        elif event.char == 'D':
+        elif event.char == 'd':
             c.move_right(10 / FPS)
-        elif event.char == 'Q':
+        elif event.char == 'q':
             c.move_down(10 / FPS)
-        elif event.char == 'E':
+        elif event.char == 'e':
             c.move_up(10 / FPS)
-        elif event.char == 'I':
+        elif event.char == 'i':
             c.rotate_up(0.1 / FPS)
-        elif event.char == 'J':
+        elif event.char == 'j':
             c.rotate_left(0.1 / FPS)
-        elif event.char == 'K':
+        elif event.char == 'k':
             c.rotate_down(0.1 / FPS)
-        elif event.char == 'L':
+        elif event.char == 'l':
             c.rotate_right(0.1 / FPS)
-        elif event.char == 'U':
+        elif event.char == 'u':
             c.rotate_ccw(0.1 / FPS)
-        elif event.char == 'O':
+        elif event.char == 'o':
             c.rotate_cw(0.1 / FPS)
         pass
 
@@ -71,7 +71,7 @@ if __name__ == "__main__":
     c = cam.Camera(canvas)
 
     # keyboard event
-    window.bind("<key>", key_event)
+    window.bind("<Key>", key_event)
 
     window.after(MS_PER_TICK, tick)
 

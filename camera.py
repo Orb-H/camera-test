@@ -8,7 +8,8 @@ class Camera:
     A class for camera.
     '''
 
-    def __init__(self, canvas, renderer=None):
+    def __init__(self, fov, canvas, renderer=None):
+        self.fov = fov
         self.pos = Vector([0, 0, 0])
         self.rot = Quaternion(Vector([0, 0, 0]))
 

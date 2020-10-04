@@ -234,20 +234,20 @@ class Quaternion:
             self.q = [1, 0, 0, 0]
         if len(v) == 3:  # Euler Angle (Yaw, Pitch, Roll)
             self.q = Quaternion(Vector([math.cos(v[2] / 2), 0, 0, math.sin(v[2] / 2)])).composite(Quaternion(Vector([math.cos(
-                v[1] / 2), math.sin(v[1] / 2), 0, 0]))).composite(Quaternion(Vector([math.cos(v[0] / 2), 0, math.sin(v[0] / 2)]))).q
+                v[1] / 2), math.sin(v[1] / 2), 0, 0]))).composite(Quaternion(Vector([math.cos(v[0] / 2), 0, math.sin(v[0] / 2), 0]))).q
         elif len(v) == 4:  # Quaternion Value
             m = v.magnitude()
             self.q = v.divide(m).v
-    
+
     def __str__(self):
         return str(self.q)
 
     def __neg__(self):
         return Quaternion(Vector([self.q[0], -self.q[1], -self.q[2], -self.q[3]]))
-    
+
     def __mul__(self, other):
         if isinstance(other, Quaternion):
-        return self.composite(other)
+            return self.composite(other)
         elif isinstance(other, Vector):
             if len(other.v) != 3:
                 raise Exception("Given vector is not a 3d vector.")
@@ -277,7 +277,7 @@ class Quaternion:
 
         return Vector([
             (1 - 2 * (jj + kk)) * v[0] + 2 *
-            (ij - kr) * v[1], 2 * (ik + jr) * v[2],
+            (ij - kr) * v[1] + 2 * (ik + jr) * v[2],
             2 * (ij + kr) * v[0] + (1 - 2 * (ii + kk)) *
             v[1] + 2 * (jk - ir) * v[2],
             2 * (ik - jr) * v[0] + 2 * (jk + ir) *
@@ -294,7 +294,7 @@ class Quaternion:
         RETURNS
             composited two rotations.
         '''
-        return Quaternion([
+        return Quaternion(Vector([
             self.q[0] * other.q[0] - self.q[1] * other.q[1] -
             self.q[2] * other.q[2] - self.q[3] * other.q[3],
             self.q[0] * other.q[1] + self.q[1] * other.q[0] +
@@ -303,4 +303,4 @@ class Quaternion:
             self.q[3] * other.q[1] - self.q[1] * other.q[3],
             self.q[0] * other.q[3] + self.q[3] * other.q[0] +
             self.q[1] * other.q[2] - self.q[2] * other.q[1]
-        ])
+        ]))

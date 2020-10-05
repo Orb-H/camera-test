@@ -88,7 +88,7 @@ if __name__ == "__main__":
     rot_label.place(in_=canvas, relx=0, rely=0.1)
 
     # create camera
-    c = cam.Camera(canvas)
+    c = cam.Camera(2 * math.pi / 3, canvas)
 
     # keyboard event
     window.bind("<Key>", key_event)

@@ -21,11 +21,11 @@ class PointRenderer():
             vec_u = self.cam.rot.rotate(mu.Vector([0, 1, 0]))
             pv = vec_v.dot(vec_p)
             if pv > 0:
-                mag_v = vec_v.magnitude()
-                vec_xp = vec_p * mag_v / pv - vec_v
-                rad = vec_xp.magnitude() / (mag_v * math.tan(self.cam.fov / 2))
-                phi = math.atan2(vec_p.dot(vec_u) / vec_p.magnitude(),
-                                 vec_p.dot(vec_r) / vec_p.magnitude())
+                vec_xp = vec_p / pv - vec_v
+                mag_xp = vec_xp.magnitude()
+                rad = mag_xp / math.tan(self.cam.fov / 2)
+                phi = math.atan2(vec_p.dot(vec_u) / mag_xp,
+                                 vec_p.dot(vec_r) / mag_xp)
                 pos_x = (1 + rad * math.cos(phi)) * self.s - \
                     int(max((self.h - self.w) / 2, 0))
                 pos_y = (1 + rad * math.sin(phi)) * self.s - \

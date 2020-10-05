@@ -50,22 +50,28 @@ class Camera:
         self.rot = amount * self.rot
 
     def rotate_up(self, amount):
+        axis = self.rot * Vector([1, 0, 0])
+        axis = axis / axis.magnitude() * math.sin(amount)
         self.rotate(Quaternion(
-            Vector([math.cos(amount), math.sin(amount), 0, 0])))
+            Vector([math.cos(amount), axis[0], axis[1], axis[2]])))
 
     def rotate_down(self, amount):
         self.rotate_up(-amount)
 
     def rotate_left(self, amount):
+        axis = self.rot * Vector([0, 1, 0])
+        axis = axis / axis.magnitude() * math.sin(amount)
         self.rotate(Quaternion(
-            Vector([math.cos(amount), 0, math.sin(amount), 0])))
+            Vector([math.cos(amount), axis[0], axis[1], axis[2]])))
 
     def rotate_right(self, amount):
         self.rotate_left(-amount)
 
     def rotate_ccw(self, amount):
+        axis = self.rot * Vector([0, 0, -1])
+        axis = axis / axis.magnitude() * math.sin(amount)
         self.rotate(Quaternion(
-            Vector([math.cos(amount), 0, 0, -math.sin(amount)])))
+            Vector([math.cos(amount), axis[0], axis[1], axis[2]])))
 
     def rotate_cw(self, amount):
         self.rotate_ccw(-amount)

@@ -1,6 +1,7 @@
 import math
 import tkinter as tk
 from math_util import *
+import renderer.point_renderer as pr
 
 
 class Camera:
@@ -14,12 +15,13 @@ class Camera:
         self.rot = Quaternion(Vector([0, 0, 0]))
 
         self.c = canvas
-        self.r = renderer
+        self.r = pr.PointRenderer(canvas, self)
 
     def render(self):
         if self.c is None or self.r is None:
             return
-        self.r.render()
+        self.r.render([[0, 0, 0], [0, 0, 1], [0, 1, 0], [1, 0, 0], [
+                      0, 1, 1], [1, 0, 1], [1, 1, 0], [1, 1, 1]])  # simple example
 
     # Position
 

@@ -1,6 +1,7 @@
 import tkinter as tk
 import time
 import camera as cam
+import math
 
 # resolution
 W = 480

@@ -23,12 +23,17 @@ class PointRenderer():
             if pv > 0:
                 vec_xp = vec_p / pv - vec_v
                 mag_xp = vec_xp.magnitude()
-                rad = mag_xp / math.tan(self.cam.fov / 2)
-                phi = math.atan2(vec_p.dot(vec_u) / mag_xp,
-                                 vec_p.dot(vec_r) / mag_xp)
-                pos_x = (1 + rad * math.cos(phi)) * self.s - \
+                rad = mag_xp / (math.tan(self.cam.fov / 2))
+                screen_x = 0
+                screen_y = 0
+                if rad > 0:
+                    phi = math.atan2(vec_xp.dot(vec_u) / mag_xp,
+                                     vec_xp.dot(vec_r) / mag_xp)
+                    screen_x = rad * math.cos(phi)
+                    screen_y = rad * math.sin(phi)
+                pos_x = (1 + screen_x) * self.s - \
                     int(max((self.h - self.w) / 2, 0))
-                pos_y = (1 + rad * math.sin(phi)) * self.s - \
+                pos_y = (1 - screen_y) * self.s - \
                     int(max((self.w - self.h) / 2, 0))
                 self.c.create_oval(pos_x - 3, pos_y - 3,
                                    pos_x + 3, pos_y + 3, fill='white')

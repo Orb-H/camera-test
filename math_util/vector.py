@@ -178,31 +178,6 @@ class Vector:
             raise Exception("Given two vectors have different size.")
         return sum(self.v[i] * other.v[i] for i in range(len(self.v)))
 
-    def cross(self, other):
-        '''
-        Cross-multiplies two vectors.
-
-        PARAMETER
-            other: A vector to perform a cross product with this vector.
-
-        RETURNS
-            Result of cross product between this vector and other.
-
-        RAISES
-            Exception: When dimensions of two vectors are different or dimensions of two vectors are not 3.
-        '''
-        if len(self.v) != len(other.v):
-            raise Exception("Given two vectors have different size.")
-        if len(self.v) != 3 and len(self.v) != 7:
-            raise Exception("Cross product is only defined for size 3 and 7.")
-        if len(self.v) == 7:
-            raise NotImplementedError()
-        return Vector([
-            self.v[1] * other.v[2] - self.v[2] * other.v[1],
-            self.v[2] * other.v[0] - self.v[0] * other.v[2],
-            self.v[0] * other.v[1] - self.v[1] * other.v[0]
-        ])
-
     def unit(self):
         '''
         Calculates unit vector of this vector.
@@ -247,7 +222,7 @@ class Vector3(Vector):
             self.v[2] * other.v[0] - self.v[0] * other.v[2],
             self.v[0] * other.v[1] - self.v[1] * other.v[0]
         ])
-    
+
 
 class Vector4(Vector):
     '''
@@ -263,17 +238,14 @@ class Vector4(Vector):
             self.v = [x, 0 if y is None else y,
                       0 if z is None else z, 0 if w is None else w]
 
-    def cross(self, other):
+    def hamilton(self, other):
         '''
-        Cross-multiplies two vectors.
+        Calculates hamilton product of two vectors.
 
         PARAMETER
-            other: A vector to perform a cross product with this vector.
+            other: A vector to perform a Hamilton product.
 
         RETURNS
-            Result of cross product between this vector and other.
-
-        RAISES
-            Exception: When dimensions of two vectors are different or dimensions of two vectors are not 3.
+            Result of Hamilton product of this vector and other.
         '''
-        raise Exception("Cross product is not defined in R^4.")
+        return Vector4(self.v[0] * other.v[0] - self.v[1] * other.v[1] - self.v[2] * other.v[2] - self.v[3] * other.v[3], self.v[1] * other.v[0] + self.v[0] * other.v[1] + self.v[2] * other.v[3] - self.v[3] * other.v[2], self.v[2] * other.v[0] + self.v[0] * other.v[2] + self.v[3] * other.v[1] - self.v[1] * other.v[3], self.v[0] * other.v[3] + self.v[3] * other.v[0] + self.v[1] * other.v[2] - self.v[2] * other.v[1])

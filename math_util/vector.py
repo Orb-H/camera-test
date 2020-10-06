@@ -178,6 +178,30 @@ class Vector:
             raise Exception("Given two vectors have different size.")
         return sum(self.v[i] * other.v[i] for i in range(len(self.v)))
 
+    def unit(self):
+        '''
+        Calculates unit vector of this vector.
+
+        RETURNS
+            A unit vector of this vector.
+        '''
+        m = self.magnitude()
+        return Vector(self.v[i] / m for i in range(len(self.v)))
+
+
+class Vector3(Vector):
+    '''
+    A 3d vector class.
+    '''
+
+    def __init__(self, x=None, y=None, z=None):
+        if x is None:
+            self.v = [0, 0, 0]
+        elif isinstance(x, list):
+            self.v = [x[0], x[1], x[2]]
+        else:
+            self.v = [x, 0 if y is None else y, 0 if z is None else z]
+
     def cross(self, other):
         '''
         Cross-multiplies two vectors.
@@ -193,22 +217,35 @@ class Vector:
         '''
         if len(self.v) != len(other.v):
             raise Exception("Given two vectors have different size.")
-        if len(self.v) != 3 and len(self.v) != 7:
-            raise Exception("Cross product is only defined for size 3 and 7.")
-        if len(self.v) == 7:
-            raise NotImplementedError()
         return Vector([
             self.v[1] * other.v[2] - self.v[2] * other.v[1],
             self.v[2] * other.v[0] - self.v[0] * other.v[2],
             self.v[0] * other.v[1] - self.v[1] * other.v[0]
         ])
 
-    def unit(self):
+
+class Vector4(Vector):
+    '''
+    A 4d vector class.
+    '''
+
+    def __init__(self, x=None, y=None, z=None, w=None):
+        if x is None:
+            self.v = [0, 0, 0, 0]
+        elif isinstance(x, list):
+            self.v = [x[0], x[1], x[2], x[3]]
+        else:
+            self.v = [x, 0 if y is None else y,
+                      0 if z is None else z, 0 if w is None else w]
+
+    def hamilton(self, other):
         '''
-        Calculates unit vector of this vector.
+        Calculates hamilton product of two vectors.
+
+        PARAMETER
+            other: A vector to perform a Hamilton product.
 
         RETURNS
-            A unit vector of this vector.
+            Result of Hamilton product of this vector and other.
         '''
-        m = self.magnitude()
-        return Vector(self.v[i] / m for i in range(len(self.v)))
+        return Vector4(self.v[0] * other.v[0] - self.v[1] * other.v[1] - self.v[2] * other.v[2] - self.v[3] * other.v[3], self.v[1] * other.v[0] + self.v[0] * other.v[1] + self.v[2] * other.v[3] - self.v[3] * other.v[2], self.v[2] * other.v[0] + self.v[0] * other.v[2] + self.v[3] * other.v[1] - self.v[1] * other.v[3], self.v[0] * other.v[3] + self.v[3] * other.v[0] + self.v[1] * other.v[2] - self.v[2] * other.v[1])

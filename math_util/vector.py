@@ -219,8 +219,10 @@ class Vector3(Vector):
     A 3d vector class.
     '''
 
-    def __init__(self, x, y=None, z=None):
-        if isinstance(x, list):
+    def __init__(self, x=None, y=None, z=None):
+        if x is None:
+            self.v = [0, 0, 0]
+        elif isinstance(x, list):
             self.v = [x[0], x[1], x[2]]
         else:
             self.v = [x, 0 if y is None else y, 0 if z is None else z]
@@ -246,16 +248,20 @@ class Vector3(Vector):
             self.v[0] * other.v[1] - self.v[1] * other.v[0]
         ])
     
+
 class Vector4(Vector):
     '''
     A 4d vector class.
     '''
 
-    def __init__(self, x, y=None, z=None, w=None):
-        if isinstance(x, list):
+    def __init__(self, x=None, y=None, z=None, w=None):
+        if x is None:
+            self.v = [0, 0, 0, 0]
+        elif isinstance(x, list):
             self.v = [x[0], x[1], x[2], x[3]]
         else:
-            self.v = [x, 0 if y is None else y, 0 if z is None else z, 0 if w is None else w]
+            self.v = [x, 0 if y is None else y,
+                      0 if z is None else z, 0 if w is None else w]
 
     def cross(self, other):
         '''

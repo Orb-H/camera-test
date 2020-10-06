@@ -16,11 +16,12 @@ class PointRenderer():
 
         points_vector = [mu.Vector3(p) - self.cam.pos for p in points]
         points_vector.sort(key=lambda x: x.magnitude(), reverse=True)
+        
+        vec_v = self.cam.rot.rotate(mu.Vector3([0, 0, -1]))
+        vec_r = self.cam.rot.rotate(mu.Vector3([1, 0, 0]))
+        vec_u = self.cam.rot.rotate(mu.Vector3([0, 1, 0]))
 
         for vec_p in points_vector:
-            vec_v = self.cam.rot.rotate(mu.Vector3([0, 0, -1]))
-            vec_r = self.cam.rot.rotate(mu.Vector3([1, 0, 0]))
-            vec_u = self.cam.rot.rotate(mu.Vector3([0, 1, 0]))
             pv = vec_v.dot(vec_p)
             if pv > 0:
                 vec_xp = vec_p / pv - vec_v

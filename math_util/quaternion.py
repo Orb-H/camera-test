@@ -1,5 +1,5 @@
 import math
-from math_util.vector import Vector
+from math_util.vector import Vector3, Vector4
 
 
 class Quaternion:
@@ -18,12 +18,12 @@ class Quaternion:
             A default quaternion if v is None or zero-dimensional vector.(Rotation quaternion representing not rotationing)
             A corresponding quaternion if v is given as a format of euler angle(Yaw, Pitch, Roll in order) or scalar-multiplied quaternion
         '''
-        if v is None or len(v) == 0:  # Default Quaternion
+        if v is None:  # Default Quaternion
             self.q = [1, 0, 0, 0]
-        if len(v) == 3:  # Euler Angle (Yaw, Pitch, Roll)
-            self.q = Quaternion(Vector([math.cos(v[2] / 2), 0, 0, math.sin(v[2] / 2)])).composite(Quaternion(Vector([math.cos(
-                v[1] / 2), math.sin(v[1] / 2), 0, 0]))).composite(Quaternion(Vector([math.cos(v[0] / 2), 0, math.sin(v[0] / 2), 0]))).q
-        elif len(v) == 4:  # Quaternion Value
+        if isinstance(v, Vector3):  # Euler Angle (Yaw, Pitch, Roll)
+            self.q = Quaternion(Vector4([math.cos(v[2] / 2), 0, 0, math.sin(v[2] / 2)])).composite(Quaternion(Vector4([math.cos(
+                v[1] / 2), math.sin(v[1] / 2), 0, 0]))).composite(Quaternion(Vector4([math.cos(v[0] / 2), 0, math.sin(v[0] / 2), 0]))).q
+        elif isinstance(v, Vector4):  # Quaternion Value
             m = v.magnitude()
             self.q = v.divide(m).v
 
@@ -31,14 +31,12 @@ class Quaternion:
         return str(self.q)
 
     def __neg__(self):
-        return Quaternion(Vector([self.q[0], -self.q[1], -self.q[2], -self.q[3]]))
+        return Quaternion(Vector4(self.q[0], -self.q[1], -self.q[2], -self.q[3]))
 
     def __mul__(self, other):
         if isinstance(other, Quaternion):
             return self.composite(other)
-        elif isinstance(other, Vector):
-            if len(other.v) != 3:
-                raise Exception("Given vector is not a 3d vector.")
+        elif isinstance(other, Vector3):
             return self.rotate(other)
 
     def rotate(self, v):
@@ -51,7 +49,7 @@ class Quaternion:
         RETURNS
             A rotated vector.
         '''
-        if len(v) != 3:
+        if not isinstance(v, Vector3):
             raise Exception("Given vector is not a 3d vector.")
         ii = self.q[1] ** 2
         jj = self.q[2] ** 2
@@ -63,14 +61,14 @@ class Quaternion:
         jr = self.q[0] * self.q[2]
         kr = self.q[0] * self.q[3]
 
-        return Vector([
+        return Vector3(
             (1 - 2 * (jj + kk)) * v[0] + 2 *
             (ij - kr) * v[1] + 2 * (ik + jr) * v[2],
             2 * (ij + kr) * v[0] + (1 - 2 * (ii + kk)) *
             v[1] + 2 * (jk - ir) * v[2],
             2 * (ik - jr) * v[0] + 2 * (jk + ir) *
             v[1] + (1 - 2*(ii + jj)) * v[2]
-        ])
+        )
 
     def composite(self, other):
         '''
@@ -82,7 +80,7 @@ class Quaternion:
         RETURNS
             composited two rotations.
         '''
-        return Quaternion(Vector([
+        return Quaternion(Vector4([
             self.q[0] * other.q[0] - self.q[1] * other.q[1] -
             self.q[2] * other.q[2] - self.q[3] * other.q[3],
             self.q[0] * other.q[1] + self.q[1] * other.q[0] +

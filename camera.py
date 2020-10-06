@@ -68,7 +68,7 @@ class Camera:
         self.rotate_left(-amount)
 
     def rotate_ccw(self, amount):
-        axis = self.rot * Vector([0, 0, -1])
+        axis = self.rot * Vector([0, 0, 1])
         axis = axis / axis.magnitude() * math.sin(amount)
         self.rotate(Quaternion(
             Vector([math.cos(amount), axis[0], axis[1], axis[2]])))

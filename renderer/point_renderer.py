@@ -29,8 +29,7 @@ class PointRenderer():
                 screen_x = 0
                 screen_y = 0
                 if rad > 0:
-                    phi = math.atan2(vec_xp.dot(vec_u) / mag_xp,
-                                     vec_xp.dot(vec_r) / mag_xp)
+                    phi = math.atan2(vec_xp.dot(vec_u), vec_xp.dot(vec_r))
                     screen_x = rad * math.cos(phi)
                     screen_y = rad * math.sin(phi)
                 pos_x = (1 + screen_x) * self.s - \

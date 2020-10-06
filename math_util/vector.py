@@ -212,3 +212,62 @@ class Vector:
         '''
         m = self.magnitude()
         return Vector(self.v[i] / m for i in range(len(self.v)))
+
+
+class Vector3(Vector):
+    '''
+    A 3d vector class.
+    '''
+
+    def __init__(self, x, y=None, z=None):
+        if isinstance(x, list):
+            self.v = [x[0], x[1], x[2]]
+        else:
+            self.v = [x, 0 if y is None else y, 0 if z is None else z]
+
+    def cross(self, other):
+        '''
+        Cross-multiplies two vectors.
+
+        PARAMETER
+            other: A vector to perform a cross product with this vector.
+
+        RETURNS
+            Result of cross product between this vector and other.
+
+        RAISES
+            Exception: When dimensions of two vectors are different or dimensions of two vectors are not 3.
+        '''
+        if len(self.v) != len(other.v):
+            raise Exception("Given two vectors have different size.")
+        return Vector([
+            self.v[1] * other.v[2] - self.v[2] * other.v[1],
+            self.v[2] * other.v[0] - self.v[0] * other.v[2],
+            self.v[0] * other.v[1] - self.v[1] * other.v[0]
+        ])
+    
+    class Vector4(Vector):
+        '''
+        A 4d vector class.
+        '''
+
+        def __init__(self, x, y=None, z=None, w=None):
+            if isinstance(x, list):
+                self.v = [x[0], x[1], x[2], x[3]]
+            else:
+                self.v = [x, 0 if y is None else y, 0 if z is None else z, 0 if w is None else w]
+
+        def cross(self, other):
+            '''
+            Cross-multiplies two vectors.
+
+            PARAMETER
+                other: A vector to perform a cross product with this vector.
+
+            RETURNS
+                Result of cross product between this vector and other.
+
+            RAISES
+                Exception: When dimensions of two vectors are different or dimensions of two vectors are not 3.
+            '''
+            raise Exception("Cross product is not defined in R^4.")

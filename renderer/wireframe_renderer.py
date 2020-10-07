@@ -4,11 +4,13 @@ import math_util as mu
 
 
 class WireframeRenderer():
-    def __init__(self, c, cam):
+    def __init__(self, c, cam, near=0.1, far=2000):
         self.c = c
         self.w = int(c['width'])
         self.h = int(c['height'])
         self.s = int(max(self.w, self.h) / 2)
+        self.near = near
+        self.far = far
         self.cam = cam
 
     def render(self, points, lines):
@@ -26,7 +28,7 @@ class WireframeRenderer():
 
         ref = [vec_r - vec_v * math.tan(self.cam.fov / 2), vec_r + vec_v * math.tan(self.cam.fov / 2),
                vec_u - vec_v * math.tan(self.cam.fov / 2), vec_u + vec_v * math.tan(self.cam.fov / 2), vec_v, vec_v]
-        ref2 = [0, 0, 0, 0, 0.1, 2000]
+        ref2 = [0, 0, 0, 0, self.near, self.far]
 
         # Using Cohen-Sutherland algorithm
         for vec_p in points_vector:
@@ -41,9 +43,9 @@ class WireframeRenderer():
                 code = code | 4
             if up_angle < -self.cam.fov / 2:
                 code = code | 8
-            if vec_p.dot(vec_v) < 0.1:
+            if vec_p.dot(vec_v) < self.near:
                 code = code | 16
-            if vec_p.dot(vec_v) > 2000:
+            if vec_p.dot(vec_v) > self.far:
                 code = code | 32
             points_code.append(code)
 

@@ -2,6 +2,7 @@ import math
 import tkinter as tk
 from math_util import *
 import renderer.point_renderer as pr
+import renderer.wireframe_renderer as wr
 
 
 class Camera:
@@ -15,13 +16,13 @@ class Camera:
         self.rot = Quaternion(Vector3([0, 0, 0]))
 
         self.c = canvas
-        self.r = pr.PointRenderer(canvas, self)
+        self.r = wr.WireframeRenderer(canvas, self)
 
     def render(self):
         if self.c is None or self.r is None:
             return
-        self.r.render([[0, 0, 0], [0, 0, 1], [0, 1, 0], [1, 0, 0], [
-                      0, 1, 1], [1, 0, 1], [1, 1, 0], [1, 1, 1]])  # simple example
+        self.r.render([[0, 0, 0], [0, 0, 1], [0, 1, 1], [0, 1, 0], [1, 0, 0], [1, 0, 1], [1, 1, 1], [1, 1, 0]], [
+                      [0, 1], [1, 2], [2, 3], [3, 0], [4, 5], [5, 6], [6, 7], [7, 4], [0, 4], [1, 5], [2, 6], [3, 7]])  # simple example
 
     # Position
 

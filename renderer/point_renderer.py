@@ -25,8 +25,7 @@ class PointRenderer():
             pv = vec_v.dot(vec_p)
             if pv > 0:
                 vec_xp = vec_p / pv - vec_v
-                mag_xp = vec_xp.magnitude()
-                rad = mag_xp / (math.tan(self.cam.fov / 2))
+                rad = vec_xp.magnitude() / (math.tan(self.cam.fov / 2))
                 screen_x = 0
                 screen_y = 0
                 if rad > 0:

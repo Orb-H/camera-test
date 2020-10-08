@@ -20,12 +20,14 @@ class WireframeRenderer():
         vec_r = self.cam.rot.rotate(mu.Vector3([1, 0, 0]))
         vec_u = self.cam.rot.rotate(mu.Vector3([0, 1, 0]))
 
+        tfov = math.tan(self.cam.fov / 2)
+
         points_vector = [mu.Vector3(p) - self.cam.pos for p in points]
         points_code = []
         endpoints = []
 
-        self.ref = [vec_r - vec_v * math.tan(self.cam.fov / 2), vec_r + vec_v * math.tan(self.cam.fov / 2),
-                    vec_u - vec_v * math.tan(self.cam.fov / 2), vec_u + vec_v * math.tan(self.cam.fov / 2), vec_v, vec_v]
+        self.ref = [vec_r - vec_v * tfov, vec_r + vec_v * tfov,
+                    vec_u - vec_v * tfov, vec_u + vec_v * tfov, vec_v, vec_v]
         self.ref2 = [0, 0, 0, 0, self.near, self.far]
 
         # draw axes
@@ -44,8 +46,8 @@ class WireframeRenderer():
         for ai in axis_info:
             if origin_code & ai[1] == 0:
                 res = self.clip_line([origin, ai[0]], [origin_code, ai[1]])
-                self.c.create_line(self.project_point(res[0], vec_v, vec_r, vec_u), self.project_point(
-                    res[1], vec_v, vec_r, vec_u), fill=ai[2])
+                self.c.create_line(self.project_point(res[0], vec_v, vec_r, vec_u, tfov), self.project_point(
+                    res[1], vec_v, vec_r, vec_u, tfov), fill=ai[2])
 
         # Using Cohen-Sutherland algorithm
         for vec_p in points_vector:
@@ -59,16 +61,16 @@ class WireframeRenderer():
             endpoints.append([res[0], res[1]])
 
         for s in endpoints:
-            self.c.create_line(self.project_point(
-                s[0], vec_v, vec_r, vec_u), self.project_point(s[1], vec_v, vec_r, vec_u), fill='white')
+            self.c.create_line(self.project_point(s[0], vec_v, vec_r, vec_u, tfov), self.project_point(
+                s[1], vec_v, vec_r, vec_u, tfov), fill='white')
 
-    def project_point(self, vec_p, vec_v, vec_r, vec_u):
+    def project_point(self, vec_p, vec_v, vec_r, vec_u, tfov):
         '''
         Returns screen coordinates of a point. Works well if point is projected on screen, otherwise error could be occurred.
         '''
         pv = vec_p.dot(vec_v)
         vec_xp = vec_p / pv - vec_v
-        rad = vec_xp.magnitude() / (math.tan(self.cam.fov / 2))
+        rad = vec_xp.magnitude() / tfov
         screen_x = 0
         screen_y = 0
         if rad > 0:

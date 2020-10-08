@@ -73,22 +73,22 @@ if __name__ == "__main__":
     canvas.pack()
 
     fps_label_text = tk.StringVar()
-    fps_label_text.set("FPS: ")
-    fps_label = tk.Label(window, textvariable=fps_label_text, width=7,
-                     height=1, fg="white", bg="black", bd=0, anchor="nw")
+    fps_label_text.set("FPS: / Recent FPS:")
+    fps_label = tk.Label(window, textvariable=fps_label_text,
+                         height=1, fg="white", bg="black", bd=0, anchor="nw")
     fps_label.place(in_=canvas, relx=0, rely=0)
     fps_recent = FPS
 
     pos_label_text = tk.StringVar()
     pos_label_text.set("[]")
     pos_label = tk.Label(window, textvariable=pos_label_text,
-                         width=40, height=1, fg="white", bg="black", bd=0, anchor="nw")
+                         height=1, fg="white", bg="black", bd=0, anchor="nw")
     pos_label.place(in_=canvas, relx=0, rely=0.05)
 
     rot_label_text = tk.StringVar()
     rot_label_text.set("[]")
     rot_label = tk.Label(window, textvariable=rot_label_text,
-                         width=40, height=1, fg="white", bg="black", bd=0, anchor="nw")
+                         height=1, fg="white", bg="black", bd=0, anchor="nw")
     rot_label.place(in_=canvas, relx=0, rely=0.1)
 
     # create camera

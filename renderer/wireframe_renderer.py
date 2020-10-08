@@ -28,6 +28,25 @@ class WireframeRenderer():
                     vec_u - vec_v * math.tan(self.cam.fov / 2), vec_u + vec_v * math.tan(self.cam.fov / 2), vec_v, vec_v]
         self.ref2 = [0, 0, 0, 0, self.near, self.far]
 
+        # draw axes
+        origin = -self.cam.pos
+        axis_end = [mu.Vector3(10, 0, 0) + origin,
+                    mu.Vector3(0, 10, 0) + origin,
+                    mu.Vector3(0, 0, 10) + origin]
+        colors = ['#ff0000', '#00ff00', '#0000ff']
+
+        origin_code = self.clip_code(origin, vec_v, vec_r, vec_u)
+        axis_info = [[axis_end[i], self.clip_code(axis_end[i], vec_v, vec_r, vec_u), colors[i]]
+                     for i in range(3)]
+
+        axis_info.sort(key=lambda x: x[0].magnitude(), reverse=True)
+
+        for ai in axis_info:
+            if origin_code & ai[1] == 0:
+                res = self.clip_line([origin, ai[0]], [origin_code, ai[1]])
+                self.c.create_line(self.project_point(res[0], vec_v, vec_r, vec_u), self.project_point(
+                    res[1], vec_v, vec_r, vec_u), fill=ai[2])
+
         # Using Cohen-Sutherland algorithm
         for vec_p in points_vector:
             points_code.append(self.clip_code(vec_p, vec_v, vec_r, vec_u))

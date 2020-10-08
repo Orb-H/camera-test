@@ -107,7 +107,7 @@ class WireframeRenderer():
         '''
         pick_code = max(c[0], c[1])
         while pick_code > 0:
-            for i in range(5):
+            for i in range(6):
                 if pick_code & (1 << i) != 0:
                     t = (-l[1].dot(self.ref[i]) + self.ref2[i]) / \
                         (l[0] - l[1]).dot(self.ref[i])

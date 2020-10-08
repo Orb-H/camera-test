@@ -26,9 +26,9 @@ class WireframeRenderer():
         lines_code = []
         endpoints = []
 
-        ref = [vec_r - vec_v * math.tan(self.cam.fov / 2), vec_r + vec_v * math.tan(self.cam.fov / 2),
-               vec_u - vec_v * math.tan(self.cam.fov / 2), vec_u + vec_v * math.tan(self.cam.fov / 2), vec_v, vec_v]
-        ref2 = [0, 0, 0, 0, self.near, self.far]
+        self.ref = [vec_r - vec_v * math.tan(self.cam.fov / 2), vec_r + vec_v * math.tan(self.cam.fov / 2),
+                    vec_u - vec_v * math.tan(self.cam.fov / 2), vec_u + vec_v * math.tan(self.cam.fov / 2), vec_v, vec_v]
+        self.ref2 = [0, 0, 0, 0, self.near, self.far]
 
         # Using Cohen-Sutherland algorithm
         for vec_p in points_vector:
@@ -61,19 +61,9 @@ class WireframeRenderer():
             if c[0] | c[1] == 0:
                 endpoints.append([l[0], l[1]])
             else:
-                pick_code = max(c[0], c[1])
-                for i in range(5):
-                    if pick_code & (1 << i) != 0:
-                        t = (-l[1].dot(ref[i]) + ref2[i]) / \
-                            (l[0] - l[1]).dot(ref[i])
-                        mid = t * l[0] + (1 - t) * l[1]
-                        if c[0] & pick_code:
-                            lines_vector.append([mid, l[1]])
-                            lines_code.append([c[0] ^ (1 << i), c[1]])
-                        else:
-                            lines_vector.append([l[0], mid])
-                            lines_code.append([c[0], c[1] ^ (1 << i)])
-                        break
+                res = self.clip_line(l, c)
+                lines_vector.append(res[0])
+                lines_code.append(res[1])
 
         for s in endpoints:
             self.c.create_line(self.project_point(
@@ -97,3 +87,19 @@ class WireframeRenderer():
         pos_y = (1 - screen_y) * self.s - \
             int(max((self.w - self.h) / 2, 0))
         return [pos_x, pos_y]
+
+    def clip_line(self, l, c):
+        '''
+        Returns new points and clip code calculated by Cohen-Sutherland Algorithm.
+        '''
+        pick_code = max(c[0], c[1])
+        for i in range(5):
+            if pick_code & (1 << i) != 0:
+                t = (-l[1].dot(self.ref[i]) + self.ref2[i]) / \
+                    (l[0] - l[1]).dot(self.ref[i])
+                mid = t * l[0] + (1 - t) * l[1]
+                if c[0] & pick_code:
+                    return [[mid, l[1]], [c[0] ^ (1 << i), c[1]]]
+                else:
+                    return [[l[0], mid], [c[0], c[1] ^ (1 << i)]]
+                break

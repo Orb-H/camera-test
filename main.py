@@ -21,7 +21,7 @@ if __name__ == "__main__":
         c.render()
 
         window.update()
-        label_text.set("FPS: " + str(int(1 / (time.time() - t))))
+        fps_label_text.set("FPS: " + str(int(1 / (time.time() - t))))
         t = time.time()
 
         pos = c.pos.v
@@ -69,11 +69,11 @@ if __name__ == "__main__":
         window, bg="black", width=W, height=H, bd=-2)
     canvas.pack()
 
-    label_text = tk.StringVar()
-    label_text.set("FPS: ")
-    label = tk.Label(window, textvariable=label_text, width=7,
+    fps_label_text = tk.StringVar()
+    fps_label_text.set("FPS: ")
+    fps_label = tk.Label(window, textvariable=fps_label_text, width=7,
                      height=1, fg="white", bg="black", bd=0, anchor="nw")
-    label.place(in_=canvas, relx=0, rely=0)
+    fps_label.place(in_=canvas, relx=0, rely=0)
 
     pos_label_text = tk.StringVar()
     pos_label_text.set("[]")

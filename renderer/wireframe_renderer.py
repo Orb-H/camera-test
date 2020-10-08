@@ -22,8 +22,6 @@ class WireframeRenderer():
 
         points_vector = [mu.Vector3(p) - self.cam.pos for p in points]
         points_code = []
-        lines_vector = []
-        lines_code = []
         endpoints = []
 
         self.ref = [vec_r - vec_v * math.tan(self.cam.fov / 2), vec_r + vec_v * math.tan(self.cam.fov / 2),

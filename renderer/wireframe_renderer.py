@@ -35,20 +35,11 @@ class WireframeRenderer():
             points_code.append(self.clip_code(vec_p, vec_v, vec_r, vec_u))
 
         for l in lines:
-            lines_vector.append([points_vector[l[0]], points_vector[l[1]]])
-            lines_code.append([points_code[l[0]], points_code[l[1]]])
-
-        while len(lines_vector) > 0:
-            l = lines_vector.pop(0)
-            c = lines_code.pop(0)
+            c = [points_code[l[0]], points_code[l[1]]]
             if c[0] & c[1] != 0:
                 continue
-            if c[0] | c[1] == 0:
-                endpoints.append([l[0], l[1]])
-            else:
-                res = self.clip_line(l, c)
-                lines_vector.append(res[0])
-                lines_code.append(res[1])
+            res = self.clip_line([points_vector[l[0]], points_vector[l[1]]], c)
+            endpoints.append([res[0], res[1]])
 
         for s in endpoints:
             self.c.create_line(self.project_point(
@@ -96,13 +87,18 @@ class WireframeRenderer():
         Returns new points and clip code calculated by Cohen-Sutherland Algorithm.
         '''
         pick_code = max(c[0], c[1])
-        for i in range(5):
-            if pick_code & (1 << i) != 0:
-                t = (-l[1].dot(self.ref[i]) + self.ref2[i]) / \
-                    (l[0] - l[1]).dot(self.ref[i])
-                mid = t * l[0] + (1 - t) * l[1]
-                if c[0] & pick_code:
-                    return [[mid, l[1]], [c[0] ^ (1 << i), c[1]]]
-                else:
-                    return [[l[0], mid], [c[0], c[1] ^ (1 << i)]]
-                break
+        while pick_code > 0:
+            for i in range(5):
+                if pick_code & (1 << i) != 0:
+                    t = (-l[1].dot(self.ref[i]) + self.ref2[i]) / \
+                        (l[0] - l[1]).dot(self.ref[i])
+                    mid = t * l[0] + (1 - t) * l[1]
+                    if c[0] & pick_code:
+                        l[0] = mid
+                        c[0] ^= (1 << i)
+                    else:
+                        l[1] = mid
+                        c[1] ^= (1 << i)
+                    break
+            pick_code = max(c[0], c[1])
+        return [l[0], l[1]]

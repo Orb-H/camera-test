@@ -1,8 +1,7 @@
 import math
 import tkinter as tk
 from math_util import *
-import renderer.point_renderer as pr
-import renderer.wireframe_renderer as wr
+from renderer.renderer import Renderer
 
 
 class Camera:
@@ -16,7 +15,7 @@ class Camera:
         self.rot = Quaternion(Vector3([0, 0, 0]))
 
         self.c = canvas
-        self.r = wr.WireframeRenderer(canvas, self)
+        self.r = Renderer(Renderer.WIREFRAME, canvas, self)
 
     def render(self):
         if self.c is None or self.r is None:

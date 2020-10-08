@@ -15,13 +15,16 @@ if __name__ == "__main__":
     t = time.time()
 
     def tick():
-        global t
+        global t, fps_recent
 
         # Update Canvas
         c.render()
 
         window.update()
-        fps_label_text.set("FPS: " + str(int(1 / (time.time() - t))))
+        fps_now = int(1 / (time.time() - t))
+        fps_recent = (9 * fps_recent + fps_now) / 10
+        fps_label_text.set("FPS: " + str(fps_now) +
+                           " / Recent FPS: " + str(int(fps_recent)))
         t = time.time()
 
         pos = c.pos.v
@@ -74,6 +77,7 @@ if __name__ == "__main__":
     fps_label = tk.Label(window, textvariable=fps_label_text, width=7,
                      height=1, fg="white", bg="black", bd=0, anchor="nw")
     fps_label.place(in_=canvas, relx=0, rely=0)
+    fps_recent = FPS
 
     pos_label_text = tk.StringVar()
     pos_label_text.set("[]")

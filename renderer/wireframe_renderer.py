@@ -4,13 +4,13 @@ import math_util as mu
 
 
 class WireframeRenderer():
-    def __init__(self, c, cam, near=0.1, far=2000):
+    def __init__(self, c, cam, *vargs, **kwargs):
         self.c = c
         self.w = int(c['width'])
         self.h = int(c['height'])
         self.s = int(max(self.w, self.h) / 2)
-        self.near = near
-        self.far = far
+        self.near = kwargs['near'] if 'near' in kwargs else 0.1
+        self.far = kwargs['far'] if 'far' in kwargs else 2000
         self.cam = cam
 
     def render(self, points, lines):

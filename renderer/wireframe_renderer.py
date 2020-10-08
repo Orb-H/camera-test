@@ -32,22 +32,7 @@ class WireframeRenderer():
 
         # Using Cohen-Sutherland algorithm
         for vec_p in points_vector:
-            code = 0
-            right_angle = math.atan2(vec_p.dot(vec_r), vec_p.dot(vec_v))
-            up_angle = math.atan2(vec_p.dot(vec_u), vec_p.dot(vec_v))
-            if right_angle > self.cam.fov / 2:
-                code = code | 1
-            if right_angle < -self.cam.fov / 2:
-                code = code | 2
-            if up_angle > self.cam.fov / 2:
-                code = code | 4
-            if up_angle < -self.cam.fov / 2:
-                code = code | 8
-            if vec_p.dot(vec_v) < self.near:
-                code = code | 16
-            if vec_p.dot(vec_v) > self.far:
-                code = code | 32
-            points_code.append(code)
+            points_code.append(self.clip_code(vec_p, vec_v, vec_r, vec_u))
 
         for l in lines:
             lines_vector.append([points_vector[l[0]], points_vector[l[1]]])
@@ -87,6 +72,24 @@ class WireframeRenderer():
         pos_y = (1 - screen_y) * self.s - \
             int(max((self.w - self.h) / 2, 0))
         return [pos_x, pos_y]
+
+    def clip_code(self, vec_p, vec_v, vec_r, vec_u):
+        code = 0
+        right_angle = math.atan2(vec_p.dot(vec_r), vec_p.dot(vec_v))
+        up_angle = math.atan2(vec_p.dot(vec_u), vec_p.dot(vec_v))
+        if right_angle > self.cam.fov / 2:
+            code = code | 1
+        if right_angle < -self.cam.fov / 2:
+            code = code | 2
+        if up_angle > self.cam.fov / 2:
+            code = code | 4
+        if up_angle < -self.cam.fov / 2:
+            code = code | 8
+        if vec_p.dot(vec_v) < self.near:
+            code = code | 16
+        if vec_p.dot(vec_v) > self.far:
+            code = code | 32
+        return code
 
     def clip_line(self, l, c):
         '''

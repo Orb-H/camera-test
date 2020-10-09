@@ -1,5 +1,6 @@
 import tkinter as tk
 import time
+import sys
 import camera as cam
 import math
 
@@ -65,6 +66,9 @@ if __name__ == "__main__":
             c.rotate_cw(0.1 / FPS)
         pass
 
+    def close(event):
+        sys.exit()
+
     window = tk.Tk()
     window.title("camera-test")
     window.resizable(False, False)
@@ -97,6 +101,7 @@ if __name__ == "__main__":
 
     # keyboard event
     window.bind("<Key>", key_event)
+    window.bind("<Escape>", close)
 
     window.after(MS_PER_TICK, tick)
 

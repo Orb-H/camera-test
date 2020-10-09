@@ -113,6 +113,22 @@ class Vector:
             raise Exception("Given two vectors have different size.")
         return Vector(self.v[i] + other.v[i] for i in range(len(self.v)))
 
+    def add_all(self, *vargs):
+        '''
+        Add all vectors.
+
+        RETURNS
+            Result of addition.
+
+        RAISES
+            Exception: When dimension of any vectors are different from this vector.
+        '''
+        for v in vargs:
+            if len(self.v) != len(v.v):
+                raise Exception(
+                    "Some vectors have different size from original vector.")
+        return Vector(self.v[i] + sum(v.v[i] for v in vargs) for i in range(len(self.v)))
+
     def subtract(self, other):
         '''
         Add two vectors.

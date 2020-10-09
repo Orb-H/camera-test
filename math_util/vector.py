@@ -89,7 +89,7 @@ class Vector3():
         RETURNS
             Squared magnitude of this vector.
         '''
-        return sum(self.v[0] ** 2 + self.v[1] ** 2 + self.v[2] ** 2)
+        return self.v[0] ** 2 + self.v[1] ** 2 + self.v[2] ** 2
 
     def add(self, other):
         '''
@@ -309,7 +309,7 @@ class Vector4():
         RETURNS
             Squared magnitude of this vector.
         '''
-        return sum(self.v[0] ** 2 + self.v[1] ** 2 + self.v[2] ** 2 + self.v[3] ** 2)
+        return self.v[0] ** 2 + self.v[1] ** 2 + self.v[2] ** 2 + self.v[3] ** 2
 
     def add(self, other):
         '''

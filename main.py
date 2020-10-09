@@ -19,11 +19,13 @@ if __name__ == "__main__":
     def tick():
         global t, fps_recent
 
+        # Get mouse displacement and apply rotation
         dis_x = window.winfo_pointerx() - window.winfo_rootx() - W / 2
         dis_y = window.winfo_pointery() - window.winfo_rooty() - H / 2
         c.rotate_down(c.fov / 2 * dis_y / c.r.s)
         c.rotate_right(c.fov / 2 * dis_x / c.r.s)
 
+        # Reset mouse position
         window.event_generate("<Motion>", warp=True, x=W / 2, y=H / 2)
 
         # Update Canvas
@@ -71,7 +73,6 @@ if __name__ == "__main__":
             c.rotate_ccw(0.1 / FPS)
         elif event.char == 'o':
             c.rotate_cw(0.1 / FPS)
-        pass
 
     def close(event):
         sys.exit()
@@ -81,13 +82,16 @@ if __name__ == "__main__":
     window.resizable(False, False)
     window.config(cursor="none")
 
+    # Create canvas
     canvas = tk.Canvas(
         window, bg="black", width=W, height=H, bd=-2)
     canvas.pack()
 
+    # Center window
     window.geometry("{}x{}+{}+{}".format(W, H, int((window.winfo_screenwidth() -
                                                     W) / 2), int((window.winfo_screenheight() - H) / 2)))
 
+    # Add informations
     fps_label_text = tk.StringVar()
     fps_label_text.set("FPS: / Recent FPS:")
     fps_label = tk.Label(window, textvariable=fps_label_text,
@@ -107,12 +111,13 @@ if __name__ == "__main__":
                          height=1, fg="white", bg="black", bd=0, anchor="nw")
     rot_label.place(in_=canvas, relx=0, rely=0.1)
 
+    # Reset mouse position
     window.event_generate("<Motion>", warp=True, x=W / 2, y=H / 2)
 
     # create camera
     c = cam.Camera(2 * math.pi / 3, canvas)
 
-    # keyboard event
+    # bind events
     window.bind("<Key>", key_event)
     window.bind("<Escape>", close)
 

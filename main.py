@@ -19,6 +19,13 @@ if __name__ == "__main__":
     def tick():
         global t, fps_recent
 
+        dis_x = window.winfo_pointerx() - window.winfo_rootx() - W / 2
+        dis_y = window.winfo_pointery() - window.winfo_rooty() - H / 2
+        c.rotate_down(c.fov / 2 * dis_y / c.r.s)
+        c.rotate_right(c.fov / 2 * dis_x / c.r.s)
+
+        window.event_generate("<Motion>", warp=True, x=W / 2, y=H / 2)
+
         # Update Canvas
         c.render()
 
@@ -72,6 +79,7 @@ if __name__ == "__main__":
     window = tk.Tk()
     window.title("camera-test")
     window.resizable(False, False)
+    window.config(cursor="none")
 
     canvas = tk.Canvas(
         window, bg="black", width=W, height=H, bd=-2)
@@ -95,6 +103,8 @@ if __name__ == "__main__":
     rot_label = tk.Label(window, textvariable=rot_label_text,
                          height=1, fg="white", bg="black", bd=0, anchor="nw")
     rot_label.place(in_=canvas, relx=0, rely=0.1)
+
+    window.event_generate("<Motion>", warp=True, x=W / 2, y=H / 2)
 
     # create camera
     c = cam.Camera(2 * math.pi / 3, canvas)

@@ -85,6 +85,9 @@ if __name__ == "__main__":
         window, bg="black", width=W, height=H, bd=-2)
     canvas.pack()
 
+    window.geometry("{}x{}+{}+{}".format(W, H, int((window.winfo_screenwidth() -
+                                                    W) / 2), int((window.winfo_screenheight() - H) / 2)))
+
     fps_label_text = tk.StringVar()
     fps_label_text.set("FPS: / Recent FPS:")
     fps_label = tk.Label(window, textvariable=fps_label_text,

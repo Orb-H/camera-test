@@ -100,11 +100,14 @@ class WireframeRenderer():
             code = code | 32
         return code
 
-    def clip_line(self, l, c):
+    def clip_line(self, l, c=None):
         '''
         Returns new points and clip code calculated by Cohen-Sutherland Algorithm.
+        Applies Cohen-Sutherland algorithm recursively to get result line by single function call.
         '''
-        pick_code = max(c[0], c[1])
+        if c is None:
+            c = [self.clip_code(l[0]), self.clip_code(l[1])]
+        pick_code = max(c)
         while pick_code > 0:
             for i in range(6):
                 if pick_code & (1 << i) != 0:
@@ -113,10 +116,10 @@ class WireframeRenderer():
                     mid = t * l[0] + (1 - t) * l[1]
                     if c[0] & pick_code:
                         l[0] = mid
-                        c[0] ^= (1 << i)
+                        c[0] = self.clip_code(l[0])
                     else:
                         l[1] = mid
-                        c[1] ^= (1 << i)
+                        c[1] = self.clip_code(l[1])
                     break
-            pick_code = max(c[0], c[1])
+            pick_code = max(c)
         return [l[0], l[1]]

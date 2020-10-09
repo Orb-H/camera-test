@@ -86,6 +86,7 @@ class WireframeRenderer():
         code = 0
         right_angle = math.atan2(p.dot(self.r), p.dot(self.v))
         up_angle = math.atan2(p.dot(self.u), p.dot(self.v))
+        pv = p.dot(self.v)
         if right_angle > self.cam.fov / 2:
             code = code | 1
         if right_angle < -self.cam.fov / 2:
@@ -94,9 +95,9 @@ class WireframeRenderer():
             code = code | 4
         if up_angle < -self.cam.fov / 2:
             code = code | 8
-        if p.dot(self.v) < self.near:
+        if pv < self.near:
             code = code | 16
-        if p.dot(self.v) > self.far:
+        if pv > self.far:
             code = code | 32
         return code
 

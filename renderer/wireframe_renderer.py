@@ -16,18 +16,18 @@ class WireframeRenderer():
     def render(self, points, lines):
         self.c.delete("all")
 
-        vec_v = self.cam.rot.rotate(mu.Vector3([0, 0, -1]))
-        vec_r = self.cam.rot.rotate(mu.Vector3([1, 0, 0]))
-        vec_u = self.cam.rot.rotate(mu.Vector3([0, 1, 0]))
+        self.v = self.cam.rot.rotate(mu.Vector3([0, 0, -1]))
+        self.r = self.cam.rot.rotate(mu.Vector3([1, 0, 0]))
+        self.u = self.cam.rot.rotate(mu.Vector3([0, 1, 0]))
 
-        tfov = math.tan(self.cam.fov / 2)
+        self.tov = math.tan(self.cam.fov / 2)
 
         points_vector = [mu.Vector3(p) - self.cam.pos for p in points]
         points_code = []
         endpoints = []
 
-        self.ref = [vec_r - vec_v * tfov, vec_r + vec_v * tfov,
-                    vec_u - vec_v * tfov, vec_u + vec_v * tfov, vec_v, vec_v]
+        self.ref = [self.r - self.v * self.tov, self.r + self.v * self.tov,
+                    self.u - self.v * self.tov, self.u + self.v * self.tov, self.v, self.v]
         self.ref2 = [0, 0, 0, 0, self.near, self.far]
 
         # draw axes
@@ -37,21 +37,20 @@ class WireframeRenderer():
                     mu.Vector3(0, 0, 10) + origin]
         colors = ['#ff0000', '#00ff00', '#0000ff']
 
-        origin_code = self.clip_code(origin, vec_v, vec_r, vec_u)
-        axis_info = [[axis_end[i], self.clip_code(axis_end[i], vec_v, vec_r, vec_u), colors[i]]
-                     for i in range(3)]
+        origin_code = self.clip_code(origin)
+        axis_info = [[axis_end[i], self.clip_code(
+            axis_end[i]), colors[i]] for i in range(3)]
 
         axis_info.sort(key=lambda x: x[0].magnitude(), reverse=True)
 
         for ai in axis_info:
             if origin_code & ai[1] == 0:
                 res = self.clip_line([origin, ai[0]], [origin_code, ai[1]])
-                self.c.create_line(self.project_point(res[0], vec_v, vec_r, vec_u, tfov), self.project_point(
-                    res[1], vec_v, vec_r, vec_u, tfov), fill=ai[2])
+                self.c.create_line(self.project_point(
+                    res[0]), self.project_point(res[1]), fill=ai[2])
 
-        # Using Cohen-Sutherland algorithm
-        for vec_p in points_vector:
-            points_code.append(self.clip_code(vec_p, vec_v, vec_r, vec_u))
+        for p in points_vector:
+            points_code.append(self.clip_code(p))
 
         for l in lines:
             c = [points_code[l[0]], points_code[l[1]]]
@@ -61,20 +60,20 @@ class WireframeRenderer():
             endpoints.append([res[0], res[1]])
 
         for s in endpoints:
-            self.c.create_line(self.project_point(s[0], vec_v, vec_r, vec_u, tfov), self.project_point(
-                s[1], vec_v, vec_r, vec_u, tfov), fill='white')
+            self.c.create_line(self.project_point(
+                s[0]), self.project_point(s[1]), fill='white')
 
-    def project_point(self, vec_p, vec_v, vec_r, vec_u, tfov):
+    def project_point(self, p):
         '''
         Returns screen coordinates of a point. Works well if point is projected on screen, otherwise error could be occurred.
         '''
-        pv = vec_p.dot(vec_v)
-        vec_xp = vec_p / pv - vec_v
-        rad = vec_xp.magnitude() / tfov
+        pv = p.dot(self.v)
+        xp = p / pv - self.v
+        rad = xp.magnitude() / self.tov
         screen_x = 0
         screen_y = 0
         if rad > 0:
-            phi = math.atan2(vec_xp.dot(vec_u), vec_xp.dot(vec_r))
+            phi = math.atan2(xp.dot(self.u), xp.dot(self.r))
             screen_x = rad * math.cos(phi)
             screen_y = rad * math.sin(phi)
         pos_x = (1 + screen_x) * self.s - \
@@ -83,10 +82,10 @@ class WireframeRenderer():
             int(max((self.w - self.h) / 2, 0))
         return [pos_x, pos_y]
 
-    def clip_code(self, vec_p, vec_v, vec_r, vec_u):
+    def clip_code(self, p):
         code = 0
-        right_angle = math.atan2(vec_p.dot(vec_r), vec_p.dot(vec_v))
-        up_angle = math.atan2(vec_p.dot(vec_u), vec_p.dot(vec_v))
+        right_angle = math.atan2(p.dot(self.r), p.dot(self.v))
+        up_angle = math.atan2(p.dot(self.u), p.dot(self.v))
         if right_angle > self.cam.fov / 2:
             code = code | 1
         if right_angle < -self.cam.fov / 2:
@@ -95,9 +94,9 @@ class WireframeRenderer():
             code = code | 4
         if up_angle < -self.cam.fov / 2:
             code = code | 8
-        if vec_p.dot(vec_v) < self.near:
+        if p.dot(self.v) < self.near:
             code = code | 16
-        if vec_p.dot(vec_v) > self.far:
+        if p.dot(self.v) > self.far:
             code = code | 32
         return code
 

@@ -1,5 +1,6 @@
 from renderer.point_renderer import PointRenderer
 from renderer.wireframe_renderer import WireframeRenderer
+from renderer.polygon_projector import PolygonProjector
 
 
 class Renderer():
@@ -9,6 +10,7 @@ class Renderer():
 
     POINT = 1
     WIREFRAME = 2
+    POLYGON = 3
 
     def __new__(cls, rendererType, canvas, camera, *vargs, **kwargs):
         '''
@@ -37,5 +39,7 @@ class Renderer():
             return PointRenderer(canvas, camera)
         elif rendererType == 2:
             return WireframeRenderer(canvas, camera, vargs, kwargs)
+        elif rendererType == 3:
+            return PolygonProjector(canvas, camera, vargs, kwargs)
         else:
             raise Exception("Not existing renderer type.")

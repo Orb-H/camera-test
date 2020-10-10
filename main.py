@@ -1,5 +1,6 @@
 import tkinter as tk
 import time
+import sys
 import camera as cam
 import math
 
@@ -16,13 +17,25 @@ if __name__ == "__main__":
     t = time.time()
 
     def tick():
-        global t
+        global t, fps_recent
+
+        # Get mouse displacement and apply rotation
+        dis_x = window.winfo_pointerx() - window.winfo_rootx() - W / 2
+        dis_y = window.winfo_pointery() - window.winfo_rooty() - H / 2
+        c.rotate_down(c.fov / 2 * dis_y / c.r.s)
+        c.rotate_right(c.fov / 2 * dis_x / c.r.s)
+
+        # Reset mouse position
+        window.event_generate("<Motion>", warp=True, x=W / 2, y=H / 2)
 
         # Update Canvas
         c.render()
 
         window.update()
-        label_text.set("FPS: " + str(int(1 / (time.time() - t))))
+        fps_now = int(1 / (time.time() - t))
+        fps_recent = (9 * fps_recent + fps_now) / 10
+        fps_label_text.set("FPS: " + str(fps_now) +
+                           " / Recent FPS: " + str(int(fps_recent)))
         t = time.time()
 
         pos = c.pos.v
@@ -60,39 +73,53 @@ if __name__ == "__main__":
             c.rotate_ccw(0.1 / FPS)
         elif event.char == 'o':
             c.rotate_cw(0.1 / FPS)
-        pass
+
+    def close(event):
+        sys.exit()
 
     window = tk.Tk()
     window.title("camera-test")
     window.resizable(False, False)
+    window.config(cursor="none")
 
+    # Create canvas
     canvas = tk.Canvas(
         window, bg="black", width=W, height=H, bd=-2)
     canvas.pack()
 
-    label_text = tk.StringVar()
-    label_text.set("FPS: ")
-    label = tk.Label(window, textvariable=label_text, width=7,
-                     height=1, fg="white", bg="black", bd=0, anchor="nw")
-    label.place(in_=canvas, relx=0, rely=0)
+    # Center window
+    window.geometry("{}x{}+{}+{}".format(W, H, int((window.winfo_screenwidth() -
+                                                    W) / 2), int((window.winfo_screenheight() - H) / 2)))
+
+    # Add informations
+    fps_label_text = tk.StringVar()
+    fps_label_text.set("FPS: / Recent FPS:")
+    fps_label = tk.Label(window, textvariable=fps_label_text,
+                         height=1, fg="white", bg="black", bd=0, anchor="nw")
+    fps_label.place(in_=canvas, relx=0, rely=0)
+    fps_recent = FPS
 
     pos_label_text = tk.StringVar()
     pos_label_text.set("[]")
     pos_label = tk.Label(window, textvariable=pos_label_text,
-                         width=40, height=1, fg="white", bg="black", bd=0, anchor="nw")
+                         height=1, fg="white", bg="black", bd=0, anchor="nw")
     pos_label.place(in_=canvas, relx=0, rely=0.05)
 
     rot_label_text = tk.StringVar()
     rot_label_text.set("[]")
     rot_label = tk.Label(window, textvariable=rot_label_text,
-                         width=40, height=1, fg="white", bg="black", bd=0, anchor="nw")
+                         height=1, fg="white", bg="black", bd=0, anchor="nw")
     rot_label.place(in_=canvas, relx=0, rely=0.1)
+
+    # Reset mouse position
+    window.event_generate("<Motion>", warp=True, x=W / 2, y=H / 2)
 
     # create camera
     c = cam.Camera(2 * math.pi / 3, canvas)
 
-    # keyboard event
+    # bind events
     window.bind("<Key>", key_event)
+    window.bind("<Escape>", close)
 
     window.after(MS_PER_TICK, tick)
 

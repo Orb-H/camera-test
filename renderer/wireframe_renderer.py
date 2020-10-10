@@ -83,6 +83,16 @@ class WireframeRenderer():
         return [pos_x, pos_y]
 
     def clip_code(self, p):
+        '''
+        Returns code according to position, defined by Cohen-Sutherland Algorithm.
+
+        0x1 -> outside right plane
+        0x2 -> outside left plane
+        0x4 -> outside up plane
+        0x8 -> outside down plane
+        0x10 -> outside near plane
+        0x20 -> outside far plane
+        '''
         code = 0
         right_angle = math.atan2(p.dot(self.r), p.dot(self.v))
         up_angle = math.atan2(p.dot(self.u), p.dot(self.v))
@@ -123,4 +133,4 @@ class WireframeRenderer():
                         c[1] = self.clip_code(l[1])
                     break
             pick_code = max(c)
-        return [l[0], l[1]]
+        return l

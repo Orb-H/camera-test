@@ -19,13 +19,12 @@ class Quaternion:
             A corresponding quaternion if v is given as a format of euler angle(Yaw, Pitch, Roll in order) or scalar-multiplied quaternion
         '''
         if v is None:  # Default Quaternion
-            self.q = [1, 0, 0, 0]
+            self.q = Vector4.q_identity
         if isinstance(v, Vector3):  # Euler Angle (Yaw, Pitch, Roll)
             self.q = Quaternion(Vector4([math.cos(v[2] / 2), 0, 0, math.sin(v[2] / 2)])).composite(Quaternion(Vector4([math.cos(
                 v[1] / 2), math.sin(v[1] / 2), 0, 0]))).composite(Quaternion(Vector4([math.cos(v[0] / 2), 0, math.sin(v[0] / 2), 0]))).q
         elif isinstance(v, Vector4):  # Quaternion Value
-            m = v.magnitude()
-            self.q = v.divide(m).v
+            self.q = v.unit().v
 
     def __str__(self):
         return str(self.q)

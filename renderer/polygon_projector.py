@@ -3,7 +3,7 @@ import math
 import math_util as mu
 
 
-class WireframeRenderer():
+class PolygonProjector():
     def __init__(self, c, cam, *vargs, **kwargs):
         self.c = c
         self.w = int(c['width'])
@@ -13,7 +13,7 @@ class WireframeRenderer():
         self.far = kwargs['far'] if 'far' in kwargs else 2000
         self.cam = cam
 
-    def render(self, points, lines):
+    def render(self, points, faces):
         self.c.delete("all")
 
         self.v = self.cam.rot.rotate(mu.Vector3.forward)
@@ -24,7 +24,6 @@ class WireframeRenderer():
 
         points_vector = [mu.Vector3(p) - self.cam.pos for p in points]
         points_code = []
-        endpoints = []
 
         self.ref = [self.r - self.v * self.tfov, self.r + self.v * self.tfov,
                     self.u - self.v * self.tfov, self.u + self.v * self.tfov, self.v, self.v]
@@ -52,15 +51,44 @@ class WireframeRenderer():
         for p in points_vector:
             points_code.append(self.clip_code(p))
 
-        for l in lines:
-            c = [points_code[l[0]], points_code[l[1]]]
-            res = self.clip_line([points_vector[l[0]], points_vector[l[1]]], c)
-            if not res is None:
-                endpoints.append(res)
+        faces.sort(key=lambda x: (mu.Vector3.identity.add_all(
+            *[points_vector[num] for num in x]) / len(x) - self.cam.pos).magnitude(), reverse=True)
 
-        for s in endpoints:
-            self.c.create_line(self.project_point(
-                s[0]), self.project_point(s[1]), fill='white')
+        for f in faces:
+            n = len(f)
+            vertices = [points_vector[num] for num in f]
+            vertices_code = [points_code[num] for num in f]
+
+            for i in range(6):
+                res_points = []
+                res_code = []
+                for j in range(n):
+                    res = self.clip_line_oneside(i, [vertices[j], vertices[(
+                        j + 1) % n]], [vertices_code[j], vertices_code[(j + 1) % n]])
+                    if res is None:
+                        continue
+                    if len(res_points) == 0:
+                        res_points.extend(res[0])
+                        res_code.extend(res[1])
+                    elif res_points[-1] == res[0][0]:
+                        res_points.append(res[0][1])
+                        res_code.append(res[1][1])
+                    else:
+                        res_points.extend(res[0])
+                        res_code.extend(res[1])
+
+                vertices = res_points
+                vertices_code = res_code
+                n = len(vertices)
+
+                if n == 0:
+                    break
+
+            if n > 0:
+                for i in range(n):
+                    vertices[i] = self.project_point(vertices[i])
+                self.c.create_polygon(
+                    vertices, fill="#808080", outline="#ffffff")
 
     def project_point(self, p):
         '''
@@ -110,10 +138,31 @@ class WireframeRenderer():
             code = code | 32
         return code
 
+    def clip_line_oneside(self, i, l, c=None):
+        '''
+        Returns new points and clip code calculated by Sutherland-Hodgman Algorithm.
+        '''
+        if (c[0] & c[1]) & (1 << i) != 0:
+            return None
+        if (c[0] | c[1]) & (1 << i) == 0:
+            return [l, c]
+        pick_code = max(c)
+        if pick_code & (1 << i) != 0:
+            t = (-l[1].dot(self.ref[i]) + self.ref2[i]) / \
+                (l[0] - l[1]).dot(self.ref[i])
+            mid = t * l[0] + (1 - t) * l[1]
+            if c[0] & (1 << i) != 0:
+                l[0] = mid
+                c[0] = self.clip_code(l[0]) & ~(1 << i)
+            else:
+                l[1] = mid
+                c[1] = self.clip_code(l[1]) & ~(1 << i)
+        return [l, c]
+
     def clip_line(self, l, c=None):
         '''
-        Returns new points and clip code calculated by Cohen-Sutherland Algorithm.
-        Applies Cohen-Sutherland algorithm recursively to get result line by single function call.
+        Returns new points calculated by Sutherland-Hodgman Algorithm.
+        Applies Sutherland-Hodgman algorithm recursively to get result line by single function call.
         '''
         if c is None:
             c = [self.clip_code(l[0]), self.clip_code(l[1])]

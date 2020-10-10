@@ -434,3 +434,16 @@ class Vector4():
         if not isinstance(other, Vector4):
             raise TypeError()
         return Vector4(self.v[0] * other.v[0] - self.v[1] * other.v[1] - self.v[2] * other.v[2] - self.v[3] * other.v[3], self.v[1] * other.v[0] + self.v[0] * other.v[1] + self.v[2] * other.v[3] - self.v[3] * other.v[2], self.v[2] * other.v[0] + self.v[0] * other.v[2] + self.v[3] * other.v[1] - self.v[1] * other.v[3], self.v[0] * other.v[3] + self.v[3] * other.v[0] + self.v[1] * other.v[2] - self.v[2] * other.v[1])
+
+
+# static variables
+Vector3.identity = Vector3(0, 0, 0)
+Vector3.up = Vector3(0, 1, 0)
+Vector3.down = Vector3(0, -1, 0)
+Vector3.left = Vector3(-1, 0, 0)
+Vector3.right = Vector3(1, 0, 0)
+Vector3.forward = Vector3(0, 0, -1)
+Vector3.back = Vector3(0, 0, 1)
+
+Vector4.identity = Vector4(0, 0, 0, 0)
+Vector4.q_identity = Vector4(1, 0, 0, 0)

@@ -20,14 +20,14 @@ class WireframeRenderer():
         self.r = self.cam.rot.rotate(mu.Vector3.right)
         self.u = self.cam.rot.rotate(mu.Vector3.up)
 
-        self.tov = math.tan(self.cam.fov / 2)
+        self.tfov = math.tan(self.cam.fov / 2)
 
         points_vector = [mu.Vector3(p) - self.cam.pos for p in points]
         points_code = []
         endpoints = []
 
-        self.ref = [self.r - self.v * self.tov, self.r + self.v * self.tov,
-                    self.u - self.v * self.tov, self.u + self.v * self.tov, self.v, self.v]
+        self.ref = [self.r - self.v * self.tfov, self.r + self.v * self.tfov,
+                    self.u - self.v * self.tfov, self.u + self.v * self.tfov, self.v, self.v]
         self.ref2 = [0, 0, 0, 0, self.near, self.far]
 
         # draw axes
@@ -68,7 +68,7 @@ class WireframeRenderer():
         '''
         pv = p.dot(self.v)
         xp = p / pv - self.v
-        rad = xp.magnitude() / self.tov
+        rad = xp.magnitude() / self.tfov
         screen_x = 0
         screen_y = 0
         if rad > 0:

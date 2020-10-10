@@ -12,21 +12,25 @@ H = 360
 FPS = 30
 MS_PER_TICK = int(1000 / FPS) - 1
 
+is_mouse_loaded = False
+
 if __name__ == "__main__":
 
     t = time.time()
 
     def tick():
-        global t, fps_recent
+        global t, fps_recent, is_mouse_loaded
 
         # Get mouse displacement and apply rotation
-        dis_x = window.winfo_pointerx() - window.winfo_rootx() - W / 2
-        dis_y = window.winfo_pointery() - window.winfo_rooty() - H / 2
-        c.rotate_down(c.fov / 2 * dis_y / c.r.s)
-        c.rotate_right(c.fov / 2 * dis_x / c.r.s)
+        if is_mouse_loaded:
+            dis_x = window.winfo_pointerx() - window.winfo_rootx() - W / 2
+            dis_y = window.winfo_pointery() - window.winfo_rooty() - H / 2
+            c.rotate_down(c.fov / 2 * dis_y / c.r.s)
+            c.rotate_right(c.fov / 2 * dis_x / c.r.s)
 
         # Reset mouse position
         window.event_generate("<Motion>", warp=True, x=W / 2, y=H / 2)
+        is_mouse_loaded = True
 
         # Update Canvas
         c.render()

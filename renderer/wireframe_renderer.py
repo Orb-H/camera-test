@@ -121,16 +121,20 @@ class WireframeRenderer():
         pick_code = max(c)
         while pick_code > 0:
             for i in range(6):
+                if c[0] & c[1]:
+                    return None
+                if c[0] | c[1] == 0:
+                    return l
+                pick_code = max(c)
                 if pick_code & (1 << i) != 0:
                     t = (-l[1].dot(self.ref[i]) + self.ref2[i]) / \
                         (l[0] - l[1]).dot(self.ref[i])
                     mid = t * l[0] + (1 - t) * l[1]
-                    if c[0] & pick_code:
+                    if c[0] & (1 << i) != 0:
                         l[0] = mid
-                        c[0] = self.clip_code(l[0])
+                        c[0] = self.clip_code(l[0]) & ~(1 << i)
                     else:
                         l[1] = mid
-                        c[1] = self.clip_code(l[1])
+                        c[1] = self.clip_code(l[1]) & ~(1 << i)
                     break
-            pick_code = max(c)
         return l

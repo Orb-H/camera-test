@@ -1,6 +1,7 @@
 import math
 import tkinter as tk
 from math_util import *
+import renderer.point_renderer as pr
 import renderer.wireframe_renderer as wr
 
 

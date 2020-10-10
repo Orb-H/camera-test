@@ -44,8 +44,8 @@ class WireframeRenderer():
         axis_info.sort(key=lambda x: x[0].magnitude(), reverse=True)
 
         for ai in axis_info:
-            if origin_code & ai[1] == 0:
-                res = self.clip_line([origin, ai[0]], [origin_code, ai[1]])
+            res = self.clip_line([origin, ai[0]], [origin_code, ai[1]])
+            if not res is None:
                 self.c.create_line(self.project_point(
                     res[0]), self.project_point(res[1]), fill=ai[2])
 
@@ -54,10 +54,9 @@ class WireframeRenderer():
 
         for l in lines:
             c = [points_code[l[0]], points_code[l[1]]]
-            if c[0] & c[1] != 0:
-                continue
             res = self.clip_line([points_vector[l[0]], points_vector[l[1]]], c)
-            endpoints.append([res[0], res[1]])
+            if not res is None:
+                endpoints.append(res)
 
         for s in endpoints:
             self.c.create_line(self.project_point(

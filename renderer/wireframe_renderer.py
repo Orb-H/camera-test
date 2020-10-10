@@ -16,9 +16,9 @@ class WireframeRenderer():
     def render(self, points, lines):
         self.c.delete("all")
 
-        self.v = self.cam.rot.rotate(mu.Vector3([0, 0, -1]))
-        self.r = self.cam.rot.rotate(mu.Vector3([1, 0, 0]))
-        self.u = self.cam.rot.rotate(mu.Vector3([0, 1, 0]))
+        self.v = self.cam.rot.rotate(mu.Vector3.forward)
+        self.r = self.cam.rot.rotate(mu.Vector3.right)
+        self.u = self.cam.rot.rotate(mu.Vector3.up)
 
         self.tov = math.tan(self.cam.fov / 2)
 

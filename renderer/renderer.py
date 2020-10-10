@@ -20,6 +20,7 @@ class Renderer():
             rendererType: A int value for defining type of renderer.
                 - Renderer.POINT or 1: Point Projector
                 - Renderer.WIREFRAME or 2: Wireframe Renderer(Line Only)
+                - Renderer.POLYGON or 3: Polygon Projector(Just projecting faces)
 
             canvas: A tkinter canvas instance to draw on.
 

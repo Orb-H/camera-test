@@ -133,3 +133,6 @@ dmypy.json
 
 # test codes
 *_test.py
+
+# .obj files
+*.obj

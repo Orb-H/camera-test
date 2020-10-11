@@ -14,22 +14,24 @@ class PointRenderer():
     def render(self, points):
         self.c.delete("all")
 
+        self.v = self.cam.rot.rotate(mu.Vector3.forward)
+        self.r = self.cam.rot.rotate(mu.Vector3.right)
+        self.u = self.cam.rot.rotate(mu.Vector3.up)
+
+        tfov = math.tan(self.cam.fov / 2)
+
         points_vector = [mu.Vector3(p) - self.cam.pos for p in points]
         points_vector.sort(key=lambda x: x.magnitude(), reverse=True)
-        
-        vec_v = self.cam.rot.rotate(mu.Vector3([0, 0, -1]))
-        vec_r = self.cam.rot.rotate(mu.Vector3([1, 0, 0]))
-        vec_u = self.cam.rot.rotate(mu.Vector3([0, 1, 0]))
 
-        for vec_p in points_vector:
-            pv = vec_v.dot(vec_p)
+        for p in points_vector:
+            pv = self.v.dot(p)
             if pv > 0:
-                vec_xp = vec_p / pv - vec_v
-                rad = vec_xp.magnitude() / (math.tan(self.cam.fov / 2))
+                xp = p / pv - self.v
+                rad = xp.magnitude() / tfov
                 screen_x = 0
                 screen_y = 0
                 if rad > 0:
-                    phi = math.atan2(vec_xp.dot(vec_u), vec_xp.dot(vec_r))
+                    phi = math.atan2(xp.dot(self.u), xp.dot(self.r))
                     screen_x = rad * math.cos(phi)
                     screen_y = rad * math.sin(phi)
                 pos_x = (1 + screen_x) * self.s - \

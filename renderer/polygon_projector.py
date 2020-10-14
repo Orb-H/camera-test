@@ -40,7 +40,7 @@ class PolygonProjector():
         axis_info = [[axis_end[i], self.clip_code(
             axis_end[i]), colors[i]] for i in range(3)]
 
-        axis_info.sort(key=lambda x: x[0].magnitude(), reverse=True)
+        axis_info.sort(key=lambda x: (x[0] + origin).dot(self.v), reverse=True)
 
         for ai in axis_info:
             res = self.clip_line([origin, ai[0]], [origin_code, ai[1]])
@@ -58,7 +58,7 @@ class PolygonProjector():
         faces = new_faces
 
         faces.sort(key=lambda x: (mu.Vector3.identity.add_all(
-            *[points_vector[num] for num in x]) / len(x) - self.cam.pos).magnitude(), reverse=True)
+            *[points_vector[num] for num in x]) / len(x)).dot(self.v), reverse=True)
 
         for f in faces:
             n = len(f)

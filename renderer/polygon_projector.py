@@ -51,6 +51,12 @@ class PolygonProjector():
         for p in points_vector:
             points_code.append(self.clip_code(p))
 
+        new_faces = []
+        for f in faces:
+            if (points_vector[f[1]] - points_vector[f[0]]).cross(points_vector[f[2]] - points_vector[f[1]]).dot(self.v) < 0:
+                new_faces.append(f)
+        faces = new_faces
+
         faces.sort(key=lambda x: (mu.Vector3.identity.add_all(
             *[points_vector[num] for num in x]) / len(x) - self.cam.pos).magnitude(), reverse=True)
 

@@ -1,6 +1,7 @@
 import tkinter as tk
 import math
 import math_util as mu
+import model_manager as mm
 
 
 class PolygonProjector():
@@ -12,8 +13,9 @@ class PolygonProjector():
         self.near = kwargs['near'] if 'near' in kwargs else 0.1
         self.far = kwargs['far'] if 'far' in kwargs else 2000
         self.cam = cam
+        self.ml = mm.ModelLoader()
 
-    def render(self, points, faces):
+    def render(self):
         self.c.delete("all")
 
         self.v = self.cam.rot.rotate(mu.Vector3.forward)
@@ -22,8 +24,9 @@ class PolygonProjector():
 
         self.tfov = math.tan(self.cam.fov / 2)
 
-        points_vector = [mu.Vector3(p) - self.cam.pos for p in points]
+        points_vector = []
         points_code = []
+        faces = []
 
         self.ref = [self.r - self.v * self.tfov, self.r + self.v * self.tfov,
                     self.u - self.v * self.tfov, self.u + self.v * self.tfov, self.v, self.v]
@@ -48,6 +51,10 @@ class PolygonProjector():
                 self.c.create_line(self.project_point(
                     res[0]), self.project_point(res[1]), fill=ai[2])
 
+        for obj in self.ml.models:
+            points_vector.extend([p - self.cam.pos for p in obj.v])
+            faces.extend(obj.f)
+
         for p in points_vector:
             points_code.append(self.clip_code(p))
 
@@ -58,12 +65,12 @@ class PolygonProjector():
         faces = new_faces
 
         faces.sort(key=lambda x: (mu.Vector3.identity.add_all(
-            *[points_vector[num] for num in x]) / len(x)).dot(self.v), reverse=True)
+            *[points_vector[data[0] - 1] for data in x]) / len(x) - self.cam.pos).magnitude(), reverse=True)
 
         for f in faces:
             n = len(f)
-            vertices = [points_vector[num] for num in f]
-            vertices_code = [points_code[num] for num in f]
+            vertices = [points_vector[data[0] - 1] for data in f]
+            vertices_code = [points_code[data[0] - 1] for data in f]
 
             for i in range(6):
                 res_points = []

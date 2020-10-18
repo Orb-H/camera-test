@@ -1,6 +1,7 @@
 import tkinter as tk
 import math
 import math_util as mu
+import model_manager as mm
 
 
 class PointRenderer():
@@ -10,6 +11,7 @@ class PointRenderer():
         self.h = int(c['height'])
         self.s = int(max(self.w, self.h) / 2)
         self.cam = cam
+        self.ml = mm.ModelLoader()
 
     def render(self, points):
         self.c.delete("all")
@@ -20,7 +22,10 @@ class PointRenderer():
 
         tfov = math.tan(self.cam.fov / 2)
 
-        points_vector = [mu.Vector3(p) - self.cam.pos for p in points]
+        points_vector = []
+        for obj in self.ml.models:
+            points_vector.extend(
+                [[p * obj.rot + obj.pos - self.cam.pos for p in obj.v]])
         points_vector.sort(key=lambda x: x.magnitude(), reverse=True)
 
         for p in points_vector:

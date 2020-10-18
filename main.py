@@ -3,6 +3,7 @@ import time
 import sys
 import camera as cam
 import math
+import model_manager as mm
 
 # resolution
 W = 480
@@ -122,5 +123,9 @@ if __name__ == "__main__":
     window.bind("<Escape>", close)
 
     window.after(MS_PER_TICK, tick)
+
+    # load example model
+    ml = mm.ModelLoader()
+    ml.load_model("models/cube.obj")
 
     window.mainloop()

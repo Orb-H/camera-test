@@ -15,13 +15,12 @@ class Camera:
         self.rot = Quaternion(Vector3([0, 0, 0]))
 
         self.c = canvas
-        self.r = Renderer(Renderer.WIREFRAME, canvas, self)
+        self.r = Renderer(Renderer.POLYGON, canvas, self)
 
     def render(self):
         if self.c is None or self.r is None:
             return
-        self.r.render([[0, 0, 0], [0, 0, 1], [0, 1, 1], [0, 1, 0], [1, 0, 0], [1, 0, 1], [1, 1, 1], [1, 1, 0]], [
-                      [0, 1, 2, 3], [0, 4, 5, 1], [1, 5, 6, 2], [2, 6, 7, 3], [3, 7, 4, 0], [4, 7, 6, 5]])  # simple example
+        self.r.render()
 
     # Position
 
